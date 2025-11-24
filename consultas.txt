@@ -1,0 +1,120 @@
+select_all_items.py
+(JOIN entre categorias e itens)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+SELECT itens.id, itens.nome, itens.quantidade, itens.preco, categorias.nome
+FROM itens
+JOIN categorias ON categorias.id = itens.categoria_id
+""")
+
+print(cursor.fetchall())
+conn.close()
+
+count_items_by_category.py
+(Contar quantos itens existem em cada categoria)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+SELECT categorias.nome, COUNT(itens.id)
+FROM categorias
+LEFT JOIN itens ON itens.categoria_id = categorias.id
+GROUP BY categorias.nome
+""")
+
+print(cursor.fetchall())
+conn.close()
+
+sum_prices_by_category.py
+(Somar preços por categoria)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+SELECT categorias.nome, SUM(itens.preco)
+FROM categorias
+LEFT JOIN itens ON itens.categoria_id = categorias.id
+GROUP BY categorias.nome
+""")
+
+print(cursor.fetchall())
+conn.close()
+
+average_price.py
+(Média de preço de todos os itens)
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("SELECT AVG(preco) FROM itens")
+print(cursor.fetchone())
+
+conn.close()
+
+
+max_min_price.py
+(Maior e menor preço)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("SELECT MAX(preco), MIN(preco) FROM itens")
+print(cursor.fetchone())
+
+conn.close()
+
+order_by_price.py
+(Ordenar por preço do mais barato ao mais caro)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("SELECT * FROM itens ORDER BY preco ASC")
+print(cursor.fetchall())
+
+conn.close()
+
+between_prices.py
+(Itens dentro de uma faixa de preço)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("SELECT * FROM itens WHERE preco BETWEEN 5 AND 20")
+print(cursor.fetchall())
+
+conn.close()
+
+exists_category.py
+(Verificar se categoria existe usando EXISTS)
+
+import sqlite3
+
+conn = sqlite3.connect("ListaCompras.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+SELECT EXISTS(SELECT 1 FROM categorias WHERE nome = 'Mercearia')
+""")
+
+print(cursor.fetchone())  # 1 = existe, 0 = não existe
+conn.close()
+
